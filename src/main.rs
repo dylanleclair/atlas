@@ -6,12 +6,11 @@ use image::{GenericImage}; // imported to support in textures
 use std::path::Path;
 use std::fs;
 
-fn main() {
+const DEFAULT_WIDTH : &str = "32";
+const DEFAULT_HEIGHT : &str = "32";
+const DEFAULT_COLS : &str = "0";
 
-    let d_w = "32";
-    let d_h = "32";
-    let d_c = "0";
-    let d_dir = ".";
+fn main() {
 
     let args : Vec<String> = env::args().collect();
 
@@ -23,14 +22,14 @@ fn main() {
     // given width & height of the atlas
     // given width & height of each tile
 
-    let w = parsed_args.get("-w").unwrap_or(&d_w); // specifies width of tile
-    let h = parsed_args.get("-h").unwrap_or(&d_h); // specifies height of tile
-    let c = parsed_args.get("-c").unwrap_or(&d_c); // specifies the desired # columns in atlas
+    let w = parsed_args.get("-w").unwrap_or(&DEFAULT_WIDTH); // specifies width of tile
+    let h = parsed_args.get("-h").unwrap_or(&DEFAULT_HEIGHT); // specifies height of tile
+    let c = parsed_args.get("-c").unwrap_or(&DEFAULT_COLS); // specifies the desired # columns in atlas
 
     let width = w.parse::<u32>().unwrap();
     let height = h.parse::<u32>().unwrap();
 
-    let dirname = parsed_args.get("-dir").unwrap_or(&d_dir); // specifies the input directory
+    let dirname = parsed_args.get("-dir").unwrap(); // specifies the input directory
 
     // crawl through the directory, adding each file to the next calculated area
     let path = Path::new(dirname); // directory as specified
@@ -41,7 +40,6 @@ fn main() {
     if cols == 0 {
         cols = (file_count as f32).sqrt().ceil() as u32;
     }
-    println!("{}", cols);
 
     // first, calculate the expected number of rows depending on size of dir 
     let rows = ((file_count as f32) / (cols as f32).ceil()) as u32; // the number of rows needed to fit all images in
